@@ -80,7 +80,12 @@ function sync () {
 // 获取同步按钮
 let btn = document.getElementById('#btn-sync')
 
-// 用户无论连续点击多少次，接口请求都只会队列式执行同步请求
+// 用户无论连续点击或直接调用多少次，接口都只会串行请求
 btn.addEventListener('click', sync)
+
+sync()
+sync()
+sync()
+...
 
 ```
