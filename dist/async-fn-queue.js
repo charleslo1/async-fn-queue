@@ -29,10 +29,21 @@ var Queue = function () {
 
 
   _createClass(Queue, [{
-    key: 'add',
-    value: function add(fn) {
+    key: 'push',
+    value: function push(fn) {
       this.asyncFns.push(fn);
       return this;
+    }
+
+    /**
+     * 获取最前面的异步操作函数
+     * @return {Function}   异步操作函数
+     */
+
+  }, {
+    key: 'pop',
+    value: function pop() {
+      return this.asyncFns.shift();
     }
 
     /**
@@ -121,7 +132,7 @@ var Queue = function () {
   }, {
     key: 'next',
     value: function next(fn) {
-      return this.add(fn).start();
+      return this.push(fn).start();
     }
   }]);
 

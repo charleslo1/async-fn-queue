@@ -18,11 +18,11 @@ import queue from 'async-fn-queue'
 // 创建或获取一个队列
 let q = queue.get('queue_name')
 
-// 将异步操作函数添加到队列
-q.add(async () => {
+// 将异步操作函数添加到队列（入队）
+q.push(async () => {
     // 异步操作 1
 })
-q.add(async () => {
+q.push(async () => {
     // 异步操作 2
 })
 
@@ -30,11 +30,11 @@ q.add(async () => {
 q.start()
 
 // 调用 start 后追加的新异步操作需要显性调用 start 才会执行
-q.add(async () => {
+q.push(async () => {
     // 异步操作 3
 }).start()
 
-// 添加一个异步操作并开始执行，等同于 q.add(fn).start()
+// 添加一个异步操作并开始执行，等同于 q.push(fn).start()
 q.next(async () => {
     // 异步操作 4
 })
@@ -46,7 +46,7 @@ q.pause()
 q.stop()
 
 // 支持链式调用
-q.add(fn).add(fn).add(fn).exec().next(fn).pause().stop()
+q.push(fn).push(fn).push(fn).exec().next(fn).pause().stop()
 
 ```
 
@@ -81,7 +81,7 @@ function sync () {
 let btn = document.getElementById('#btn-sync')
 
 // 用户无论连续点击或直接调用多少次，接口都只会串行请求
-btn.addEventListener('click', sync)
+btn.pushEventListener('click', sync)
 
 sync()
 sync()

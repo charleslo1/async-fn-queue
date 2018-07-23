@@ -14,9 +14,17 @@ class Queue {
    * @param {Function} fn 异步操作函数
    * @return {Object}      this
    */
-  add (fn) {
+  push (fn) {
     this.asyncFns.push(fn)
     return this
+  }
+
+  /**
+   * 获取最前面的异步操作函数
+   * @return {Function}   异步操作函数
+   */
+  pop () {
+    return this.asyncFns.shift()
   }
 
   /**
@@ -88,7 +96,7 @@ class Queue {
    * @return {Object}      this
    */
   next (fn) {
-    return this.add(fn).start()
+    return this.push(fn).start()
   }
 }
 
