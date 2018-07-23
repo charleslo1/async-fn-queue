@@ -41,8 +41,8 @@ var Queue = function () {
      */
 
   }, {
-    key: 'exec',
-    value: function exec() {
+    key: 'start',
+    value: function start() {
       // 标记执行
       this.asyncFns.forEach(function (fn) {
         fn.__exec = true;
@@ -63,12 +63,12 @@ var Queue = function () {
       var _this = this;
 
       if (!this.isExec || this.runing) return;
-      if (this.asyncFns.length === 0) return this.stop();
+      if (this.asyncFns.length === 0) return this.pause();
 
       var fn = this.asyncFns.shift();
       if (!fn.__exec) {
         this.asyncFns.unshift(fn);
-        return this.stop();
+        return this.pause();
       }
 
       this.runing = true;
@@ -92,8 +92,8 @@ var Queue = function () {
      */
 
   }, {
-    key: 'stop',
-    value: function stop() {
+    key: 'pause',
+    value: function pause() {
       this.isExec = false;
       this.runing = false;
       return this;
@@ -105,9 +105,9 @@ var Queue = function () {
      */
 
   }, {
-    key: 'clear',
-    value: function clear() {
-      this.stop();
+    key: 'stop',
+    value: function stop() {
+      this.pause();
       this.asyncFns = [];
       return this;
     }
@@ -121,7 +121,7 @@ var Queue = function () {
   }, {
     key: 'next',
     value: function next(fn) {
-      return this.add(fn).exec();
+      return this.add(fn).start();
     }
   }]);
 

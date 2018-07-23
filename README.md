@@ -27,18 +27,26 @@ q.add(async () => {
 })
 
 // 开始执行队列中的异步操作（将依次执行异步操作1、2）
-q.exec()
+q.start()
 
-// 添加一个异步操作并开始执行，等同于 q.add(fn).exec()
-q.next(async () => {
+// 调用 start 后追加的新异步操作需要显性调用 start 才会执行
+q.add(async () => {
     // 异步操作 3
+}).start()
+
+// 添加一个异步操作并开始执行，等同于 q.add(fn).start()
+q.next(async () => {
+    // 异步操作 4
 })
 
-// 停止执行队列中的异步操作
+// 暂停执行队列中的异步操作
+q.pause()
+
+// 停止并清除执行队列中的异步操作
 q.stop()
 
-// 清除执行队列中的异步操作
-q.stop()
+// 支持链式调用
+q.add(fn).add(fn).add(fn).exec().next(fn).pause().stop()
 
 ```
 

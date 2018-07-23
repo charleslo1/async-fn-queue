@@ -23,7 +23,7 @@ class Queue {
    * 按顺序执行异步操作队列
    * @return {Object}      this
    */
-  exec () {
+  start () {
     // 标记执行
     this.asyncFns.forEach((fn) => {
       fn.__exec = true
@@ -39,12 +39,12 @@ class Queue {
    */
   __nextTick () {
     if (!this.isExec || this.runing) return
-    if (this.asyncFns.length === 0) return this.stop()
+    if (this.asyncFns.length === 0) return this.pause()
 
     let fn = this.asyncFns.shift()
     if (!fn.__exec) {
       this.asyncFns.unshift(fn)
-      return this.stop()
+      return this.pause()
     }
 
     this.runing = true
@@ -66,7 +66,7 @@ class Queue {
    * 停止执行
    * @return {Object}      this
    */
-  stop () {
+  pause () {
     this.isExec = false
     this.runing = false
     return this
@@ -76,8 +76,8 @@ class Queue {
    * 清除所有异步操作
    * @return {Object}      this
    */
-  clear () {
-    this.stop()
+  stop () {
+    this.pause()
     this.asyncFns = []
     return this
   }
@@ -88,7 +88,7 @@ class Queue {
    * @return {Object}      this
    */
   next (fn) {
-    return this.add(fn).exec()
+    return this.add(fn).start()
   }
 }
 
