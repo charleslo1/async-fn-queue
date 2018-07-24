@@ -42,7 +42,7 @@ q.next(async () => {
 // 暂停执行队列中的异步操作
 q.pause()
 
-// 停止并清除执行队列中的异步操作
+// 停止执行并清除队列中的异步操作
 q.stop()
 
 // 支持链式调用
@@ -80,7 +80,7 @@ function sync () {
 // 获取同步按钮
 let btn = document.getElementById('#btn-sync')
 
-// 用户无论连续点击或直接调用多少次，接口都只会串行请求
+// 无论用户连续点击或直接调用 sync 函数多少次，接口都只会串行请求
 btn.pushEventListener('click', sync)
 
 sync()
