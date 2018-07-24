@@ -39,7 +39,7 @@ q.push(async () => {
     // 异步操作 F4（将在 F1、F2、F3 执行完后开始执行 F4）
 }).start()
 
-// 添加一个异步操作并开始执行，等同于 q.push(fn).start()
+// 添加并执行下一个异步操作，等同于 q.push(fn).start()
 q.next(async () => {
     // 异步操作 F5（将在 F1、F2、F3、F4 执行完后开始执行 F5）
 })
