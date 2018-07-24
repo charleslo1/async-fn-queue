@@ -51,7 +51,7 @@ q.pause()
 q.stop()
 
 // 支持链式调用
-q.push(fn).push(fn).exec().next(fn).pause().stop()
+q.push(fn).push(fn).start().next(fn).pause().stop()
 
 ```
 
