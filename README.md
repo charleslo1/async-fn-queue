@@ -1,6 +1,8 @@
 # async-fn-queue
 > 一个异步函数队列化执行库
 
+![async-fn-queue](./assets/async-fn-queue.png)
+
 # Intro
 这个库可以将多个异步操作在队列中执行，并且能动态追加异步操作，满足在特殊场景下串行化异步操作需求
 
