@@ -15,7 +15,11 @@ class Queue {
    * @return {Object}      this
    */
   push (fn) {
-    this.asyncFns.push(fn)
+    if (fn instanceof Function) {
+      this.asyncFns.push(fn)
+    } else {
+      throw new Error('队列只接受 Function 类型')
+    }
     return this
   }
 
