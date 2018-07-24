@@ -16,7 +16,7 @@ var Queue = function () {
     _classCallCheck(this, Queue);
 
     this.name = 'default'; // 队列名称
-    this.isExec = false; // 是否可执行队列
+    this.canExec = false; // 是否可执行队列
     this.runing = false; // 是否正在执行队列
     this.asyncFns = []; // 待执行函数列表
   }
@@ -31,7 +31,11 @@ var Queue = function () {
   _createClass(Queue, [{
     key: 'push',
     value: function push(fn) {
-      this.asyncFns.push(fn);
+      if (fn instanceof Function) {
+        this.asyncFns.push(fn);
+      } else {
+        throw new Error('队列只接受 Function 类型');
+      }
       return this;
     }
 
@@ -59,7 +63,7 @@ var Queue = function () {
         fn.__exec = true;
       });
       // 开始按顺序执行操作
-      this.isExec = true;
+      this.canExec = true;
       this.__nextTick();
       return this;
     }
@@ -73,7 +77,7 @@ var Queue = function () {
     value: function __nextTick() {
       var _this = this;
 
-      if (!this.isExec || this.runing) return;
+      if (!this.canExec || this.runing) return;
       if (this.asyncFns.length === 0) return this.pause();
 
       var fn = this.asyncFns.shift();
@@ -83,17 +87,15 @@ var Queue = function () {
       }
 
       this.runing = true;
-      if (fn instanceof Function) {
-        var promise = fn();
-        var runNext = function runNext() {
-          _this.runing = false;
-          _this.__nextTick();
-        };
-        if (promise instanceof _Promise) {
-          promise.then(runNext).catch(runNext);
-        } else {
-          runNext();
-        }
+      var promise = fn();
+      var runNext = function runNext() {
+        _this.runing = false;
+        _this.__nextTick();
+      };
+      if (promise instanceof _Promise) {
+        promise.then(runNext).catch(runNext);
+      } else {
+        runNext();
       }
     }
 
@@ -105,7 +107,7 @@ var Queue = function () {
   }, {
     key: 'pause',
     value: function pause() {
-      this.isExec = false;
+      this.canExec = false;
       this.runing = false;
       return this;
     }
@@ -140,7 +142,7 @@ var Queue = function () {
 }();
 
 /**
- * QueueManager
+ * QueueManager 类
  */
 
 var QueueManager = function () {

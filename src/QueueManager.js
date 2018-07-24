@@ -1,7 +1,7 @@
 import Queue from './Queue'
 
 /**
- * QueueManager
+ * QueueManager 类
  */
 class QueueManager {
   constructor () {

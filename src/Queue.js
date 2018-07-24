@@ -4,7 +4,7 @@
 class Queue {
   constructor (name) {
     this.name = 'default'   // 队列名称
-    this.isExec = false     // 是否可执行队列
+    this.canExec = false     // 是否可执行队列
     this.runing = false     // 是否正在执行队列
     this.asyncFns = []      // 待执行函数列表
   }
@@ -41,7 +41,7 @@ class Queue {
       fn.__exec = true
     })
     // 开始按顺序执行操作
-    this.isExec = true
+    this.canExec = true
     this.__nextTick()
     return this
   }
@@ -50,7 +50,7 @@ class Queue {
    * 递归执行异步操作队列
    */
   __nextTick () {
-    if (!this.isExec || this.runing) return
+    if (!this.canExec || this.runing) return
     if (this.asyncFns.length === 0) return this.pause()
 
     let fn = this.asyncFns.shift()
@@ -60,17 +60,15 @@ class Queue {
     }
 
     this.runing = true
-    if (fn instanceof Function) {
-      let promise = fn()
-      let runNext = () => {
-        this.runing = false
-        this.__nextTick()
-      }
-      if (promise instanceof Promise) {
-        promise.then(runNext).catch(runNext)
-      } else {
-        runNext()
-      }
+    let promise = fn()
+    let runNext = () => {
+      this.runing = false
+      this.__nextTick()
+    }
+    if (promise instanceof Promise) {
+      promise.then(runNext).catch(runNext)
+    } else {
+      runNext()
     }
   }
 
@@ -79,7 +77,7 @@ class Queue {
    * @return {Object}      this
    */
   pause () {
-    this.isExec = false
+    this.canExec = false
     this.runing = false
     return this
   }
