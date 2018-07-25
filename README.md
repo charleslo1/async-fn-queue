@@ -17,23 +17,28 @@ npm install async-fn-queue --save
 ``` js
 import queue from 'async-fn-queue'
 
-// 创建或获取一个队列
-let q = queue.get('queue_name')
+// queue.get: 创建或获取一个队列
+var q = queue.get('queue_name')
+// 获取默认队列
+var q = queue.get()
+// queue 本身就是默认队列
+queue === queue.get()    // true
+// 任何队列都可以获取和创建新的队列
+var newQueue = q.get('new_queue')
 
-// 将异步操作函数添加到队列（入队）
+// queue.push: 将异步操作函数添加到队列（入队）
 q.push(async () => {
     // 异步操作 F1
 })
 q.push(async () => {
     // 异步操作 F2
 })
-
 // 同时也支持同步操作
 q.push(() => {
     // 同步操作 F3
 })
 
-// 开始执行队列中的异步操作（将依次执行操作 F1、F2、F3）
+// queue.start: 开始执行队列中的异步操作（将依次执行操作 F1、F2、F3）
 q.start()
 
 // 调用 start 后追加的新异步操作需要显性调用 start 才会执行
@@ -41,19 +46,23 @@ q.push(async () => {
     // 异步操作 F4（将在 F1、F2、F3 执行完后开始执行 F4）
 }).start()
 
-// 添加并执行下一个异步操作，等同于 q.push(fn).start()
+// queue.next: 添加并执行下一个异步操作，等同于 q.push(fn).start()
 q.next(async () => {
     // 异步操作 F5（将在 F1、F2、F3、F4 执行完后开始执行 F5）
 })
 
-// 暂停执行队列中的异步操作
+// queue.pause: 暂停执行队列中的异步操作
 q.pause()
 
-// 停止执行并清除队列中的异步操作
+// queue.stop: 停止执行并清除队列中的异步操作
 q.stop()
+
 
 // 支持链式调用
 q.push(fn).push(fn).start().next(fn).pause().stop()
+
+// 使用默认队列
+queue.push(fn).push(fn).start().next(fn).pause().stop()
 
 ```
 

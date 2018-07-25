@@ -1,34 +1,52 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('babel-runtime/helpers/classCallCheck'), require('babel-runtime/helpers/createClass'), require('babel-runtime/core-js/promise')) :
-	typeof define === 'function' && define.amd ? define(['babel-runtime/helpers/classCallCheck', 'babel-runtime/helpers/createClass', 'babel-runtime/core-js/promise'], factory) :
-	(global.weappCookie = factory(global._classCallCheck,global._createClass,global._Promise));
-}(this, (function (_classCallCheck,_createClass,_Promise) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('babel-runtime/core-js/promise'), require('babel-runtime/helpers/classCallCheck'), require('babel-runtime/helpers/createClass')) :
+	typeof define === 'function' && define.amd ? define(['babel-runtime/core-js/promise', 'babel-runtime/helpers/classCallCheck', 'babel-runtime/helpers/createClass'], factory) :
+	(global.weappCookie = factory(global._Promise,global._classCallCheck,global._createClass));
+}(this, (function (_Promise,_classCallCheck,_createClass) { 'use strict';
 
+_Promise = _Promise && _Promise.hasOwnProperty('default') ? _Promise['default'] : _Promise;
 _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
 _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-_Promise = _Promise && _Promise.hasOwnProperty('default') ? _Promise['default'] : _Promise;
 
 /**
- * Queue 类
+ * AsyncQueue 类
  */
-var Queue = function () {
-  function Queue(name) {
-    _classCallCheck(this, Queue);
+var AsyncQueue = function () {
+  /**
+   * 构造函数
+   * @param  {String} name 队列名
+   */
+  function AsyncQueue() {
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
 
-    this.name = 'default'; // 队列名称
+    _classCallCheck(this, AsyncQueue);
+
+    this.name = name; // 队列名称
     this.canExec = false; // 是否可执行队列
     this.runing = false; // 是否正在执行队列
     this.asyncFns = []; // 待执行函数列表
   }
 
   /**
-   * 添加异步操作函数
-   * @param {Function} fn 异步操作函数
-   * @return {Object}      this
+   * 根据名称获取队列，不存在则创建
+   * @param  {String} name 队列名称
+   * @return {AsyncQueue}  队列对象
    */
 
 
-  _createClass(Queue, [{
+  _createClass(AsyncQueue, [{
+    key: 'get',
+    value: function get(name) {
+      return AsyncQueue.get(name);
+    }
+
+    /**
+     * 添加异步操作函数
+     * @param {Function} fn 异步操作函数
+     * @return {Object}      this
+     */
+
+  }, {
     key: 'push',
     value: function push(fn) {
       if (fn instanceof Function) {
@@ -136,49 +154,41 @@ var Queue = function () {
     value: function next(fn) {
       return this.push(fn).start();
     }
-  }]);
 
-  return Queue;
-}();
+    /**
+     * 根据名称获取队列，不存在则创建
+     * @param  {String} name 队列名称
+     * @return {AsyncQueue}  队列对象
+     */
 
-/**
- * QueueManager 类
- */
-
-var QueueManager = function () {
-  function QueueManager() {
-    _classCallCheck(this, QueueManager);
-
-    // 队列列表
-    this.queues = {};
-  }
-
-  /**
-   * 根据名称获取队列，不存在则创建
-   * @param  {String} name 队列名称
-   * @return {Queue}       队列对象
-   */
-
-
-  _createClass(QueueManager, [{
+  }], [{
     key: 'get',
-    value: function get(name) {
-      var queue = this.queues[name];
+    value: function get() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+
+      var queue = AsyncQueue.queues[name];
       if (!queue) {
-        queue = new Queue(name);
-        this.queues[name] = queue;
+        queue = new AsyncQueue(name);
+        AsyncQueue.queues[name] = queue;
       }
       return queue;
     }
   }]);
 
-  return QueueManager;
+  return AsyncQueue;
 }();
 
-// 实例化 queueManager
-var queueManager$1 = new QueueManager();
+/**
+ * 队列缓存
+ * @type {Array}
+ */
 
-return queueManager$1;
+
+AsyncQueue.queues = [];
+
+var queue$1 = AsyncQueue.get();
+
+return queue$1;
 
 })));
 //# sourceMappingURL=async-fn-queue.js.map

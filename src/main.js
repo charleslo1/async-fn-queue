@@ -1,6 +1,3 @@
-import QueueManager from './QueueManager'
+import AsyncQueue from './AsyncQueue'
 
-// 实例化 queueManager
-const queueManager = new QueueManager()
-
-export default queueManager
+export default AsyncQueue.get()

@@ -1,3 +1,3 @@
-import queueManager from './src/main'
+import queue from './src/main'
 
-export default queueManager
+export default queue

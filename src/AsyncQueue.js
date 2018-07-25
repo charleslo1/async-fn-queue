@@ -1,12 +1,25 @@
 /**
- * Queue 类
+ * AsyncQueue 类
  */
-class Queue {
-  constructor (name) {
-    this.name = 'default'   // 队列名称
-    this.canExec = false     // 是否可执行队列
+class AsyncQueue {
+  /**
+   * 构造函数
+   * @param  {String} name 队列名
+   */
+  constructor (name = 'default') {
+    this.name = name        // 队列名称
+    this.canExec = false    // 是否可执行队列
     this.runing = false     // 是否正在执行队列
     this.asyncFns = []      // 待执行函数列表
+  }
+
+  /**
+   * 根据名称获取队列，不存在则创建
+   * @param  {String} name 队列名称
+   * @return {AsyncQueue}  队列对象
+   */
+  get (name) {
+    return AsyncQueue.get(name)
   }
 
   /**
@@ -100,6 +113,26 @@ class Queue {
   next (fn) {
     return this.push(fn).start()
   }
+
+  /**
+   * 根据名称获取队列，不存在则创建
+   * @param  {String} name 队列名称
+   * @return {AsyncQueue}  队列对象
+   */
+  static get (name = 'default') {
+    let queue = AsyncQueue.queues[name]
+    if (!queue) {
+      queue = new AsyncQueue(name)
+      AsyncQueue.queues[name] = queue
+    }
+    return queue
+  }
 }
 
-export default Queue
+/**
+ * 队列缓存
+ * @type {Array}
+ */
+AsyncQueue.queues = []
+
+export default AsyncQueue
