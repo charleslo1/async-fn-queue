@@ -73,7 +73,7 @@ class AsyncQueue {
     }
 
     this.runing = true
-    let promise = fn()
+    let promise = (fn instanceof Promise) ? fn : fn()
     let runNext = () => {
       this.runing = false
       this.__nextTick()

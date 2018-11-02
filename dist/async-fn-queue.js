@@ -105,7 +105,7 @@ var AsyncQueue = function () {
       }
 
       this.runing = true;
-      var promise = fn();
+      var promise = fn instanceof _Promise ? fn : fn();
       var runNext = function runNext() {
         _this.runing = false;
         _this.__nextTick();
