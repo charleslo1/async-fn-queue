@@ -28,10 +28,10 @@ class AsyncQueue {
    * @return {Object}      this
    */
   push (fn) {
-    if (fn instanceof Function) {
+    if (fn instanceof Function || fn instanceof Promise) {
       this.asyncFns.push(fn)
     } else {
-      throw new Error('队列只接受 Function 类型')
+      throw new Error('队列只接受 Function 和 Promise 类型')
     }
     return this
   }
