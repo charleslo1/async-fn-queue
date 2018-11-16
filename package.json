@@ -1,6 +1,6 @@
 {
   "name": "async-fn-queue",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "一个异步函数队列化执行库",
   "main": "dist/async-fn-queue.js",
   "scripts": {

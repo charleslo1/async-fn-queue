@@ -97,7 +97,7 @@ function sync () {
 let btn = document.getElementById('#btn-sync')
 
 // 无论用户连续点击或直接调用 sync 函数多少次，接口都只会串行请求
-btn.pushEventListener('click', sync)
+btn.addEventListener('click', sync)
 
 sync()
 sync()
