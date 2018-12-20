@@ -4,6 +4,7 @@
 ![async-fn-queue](./assets/async-fn-queue.png)
 
 # Intro
+
 这个库可以将多个异步操作在队列中执行，并且能动态追加异步操作，满足在特殊场景下串行化异步操作需求
 
 # Install
@@ -13,7 +14,47 @@ npm install async-fn-queue --save
 
 ```
 
+# Usage
+
+下面是一个数据同步的示例，在同步本地和服务器数据时，我们通常希望串行化请求，于是我们可以使用异步队列来进行操作
+
+``` js
+import queue from 'async-fn-queue'
+import http from 'axios'
+
+/**
+ * 同步数据
+ */
+function sync () {
+    // 使用队列名获取队列（不存在则自动创建）并执行该队列
+    queue.get('sync').next(async () => {
+        // 获取本地数据
+        let localData = JSON.parse(localStorage.getItem('data'))
+        // push 到服务端
+        await http.post('/data/push', localData)
+
+        // 拉取服务端新数据
+        let newData = await http.post('/data/pull')
+        // 合并到本地
+        localData = localData.concat(newData)
+        localStorage.setItem('data', JSON.stringify(localData))
+    })
+}
+
+// 获取同步按钮
+let btn = document.getElementById('#btn-sync')
+
+// 无论用户连续点击或直接调用 sync 函数多少次，接口都只会串行请求
+btn.addEventListener('click', sync)
+
+sync()
+sync()
+sync()
+...
+```
+
 # Api
+
 ``` js
 import queue from 'async-fn-queue'
 
@@ -66,42 +107,6 @@ queue.push(fn).push(fn).start().next(fn).pause().stop()
 
 ```
 
-# Usage
+![star](https://user-gold-cdn.xitu.io/2018/7/24/164ca9c0e943dcd7?w=240&h=240&f=png&s=41877)
 
-下面是一个数据同步的示例，在同步本地和服务器数据时，我们通常希望串行化请求，于是我们可以使用异步队列来进行操作
-
-``` js
-import queue from 'async-fn-queue'
-import http from 'axios'
-
-/**
- * 同步数据
- */
-function sync () {
-    // 使用队列名获取队列（不存在则自动创建）并执行该队列
-    queue.get('sync').next(async () => {
-        // 获取本地数据
-        let localData = JSON.parse(localStorage.getItem('data'))
-        // push 到服务端
-        await http.post('/data/push', localData)
-
-        // 拉取服务端新数据
-        let newData = await http.post('/data/pull')
-        // 合并到本地
-        localData = localData.concat(newData)
-        localStorage.setItem('data', JSON.stringify(localData))
-    })
-}
-
-// 获取同步按钮
-let btn = document.getElementById('#btn-sync')
-
-// 无论用户连续点击或直接调用 sync 函数多少次，接口都只会串行请求
-btn.addEventListener('click', sync)
-
-sync()
-sync()
-sync()
-...
-
-```
+如果对你有用，欢迎 star ^_^
